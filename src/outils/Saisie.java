@@ -33,6 +33,7 @@ public class Saisie{
         return txt.trim();/* on supprime les espaces vides**/
     }
 
+    /* petite procedure qui permet de d'afficher(print) n'importe quel type d'objet **/
     public static void p(Object o)
     {
         System.out.println(o);

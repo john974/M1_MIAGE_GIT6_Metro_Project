@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Collections;
+import outils.Saisie;
 
 public final class Station implements Comparable<Station>{
 
@@ -78,18 +79,19 @@ public final class Station implements Comparable<Station>{
 
     public void afficher()
     {
-        p("Nom: "+this.getNom()+"\nNumero: "+this.getNumero()+"\n");
+        Saisie.p("Nom: "+this.getNom()+"\nNumero: "+this.getNumero()+"\n");
     }
 
-    public void  chemin()
+    public StringBuffer  chemin()
     {
-        Iterator iter  = this.adjacents.iterator();
-        while(iter.hasNext())
-        {
-           Adjacent a = (Adjacent)iter.next();
-           p(this.getNom()+"-"+a.getCost()+"-"+a.getNode().getNom());
-        }
-        
+        StringBuffer s = new StringBuffer("");
+        if(this.predecesseur == null)
+            return s.append(new StringBuffer(this.nom+""));
+           // return new StringBuffer("-");
+        else
+            s.append(this.predecesseur.chemin()).append("-").append(this.nom);
+
+        return s;
     }
 
     /* ctte methode ajoute un adjacents a la liste des adjacents.**/
@@ -126,21 +128,6 @@ public final class Station implements Comparable<Station>{
 
         return dist;
     }
-     /* cette méthode retourne le plus proche voisins d'un sommet
-      cette méthode n'est plus importante car les voisins sont desormais triée ***/
-   public Adjacent ppv()
-   {
-       Adjacent tmp = this.getAdjacents().getFirst();
-        for(Adjacent a : this.getAdjacents())
-        {
-            if(a.getCost() < tmp.getCost())
-            {
-                tmp = a;
-            }
-        }
-
-        return tmp;
-   }
 
     public Station getPredecesseur() {
         return predecesseur;
@@ -157,10 +144,6 @@ public final class Station implements Comparable<Station>{
 
        return false;
    }
-    public void p(String s)
-    {
-        System.out.println(s);
-    }
 
     /* definition de la méthode  compareTo de l'interface comparable **/
     public int compareTo(Station o) {

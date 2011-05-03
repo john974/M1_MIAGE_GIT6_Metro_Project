@@ -6,13 +6,14 @@
 package projet_gl;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Ligne {
     private int numero;
     private String nom;
     private double tempDeParcour;
-    private boolean incident;
-    private HashMap<String,Station> listStations;
+    private boolean incident = false;
+    private LinkedList<Station> listStations = new LinkedList<Station>();
 
      public Ligne(int numero, String nom, double tempDeParcour, boolean incident) {
         this.numero = numero;
@@ -25,11 +26,17 @@ public class Ligne {
         this.incident = incident;
     }
 
-    public void setListStations(HashMap<String, Station> listStations) {
+    public void setListStations(LinkedList<Station> listStations) {
         if(this.listStations == null )
-            this.listStations = new HashMap<String, Station>();
+            this.listStations = new LinkedList<Station>();
         this.listStations = listStations;
     }
+
+    public Ligne(int numero, String nom) {
+        this.numero = numero;
+        this.nom = nom;
+    }
+    
 
     public void setNom(String nom) {
         this.nom = nom;
@@ -47,7 +54,7 @@ public class Ligne {
         return incident;
     }
 
-    public HashMap<String, Station> getListStations() {
+    public LinkedList<Station> getListStations() {
         return listStations;
     }
 
@@ -64,4 +71,15 @@ public class Ligne {
     }
 
 
+    public   boolean isLine(LinkedList<Station> ls)
+    {
+        if(this.listStations.containsAll(ls))
+            return true;
+        return false;
+    }
+
+    public void getLine(LinkedList<Station> ls)
+    {
+        
+    }
 }

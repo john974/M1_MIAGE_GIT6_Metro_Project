@@ -21,6 +21,8 @@ public class Reseau {
     private Station startStation; /* la station de debut du reseau */
     private LinkedList<Station> allStations = new LinkedList<Station>(); /* la liste de toute les stations */
     private LinkedList<Integer> visitedStations = new LinkedList<Integer>(); /* la liste des stations visités pour la recherche du chemin**/
+    private LinkedList<Ligne> allLignes = new LinkedList<Ligne>();/* l'ensemble des lignes qui se trouve sur le reseau **/
+
     private PriorityQueue<Adjacent> closed = new PriorityQueue<Adjacent>();
 
     public Reseau(Station startStation) {
@@ -52,6 +54,14 @@ public class Reseau {
 
     public void setVisitedStations(LinkedList<Integer> visitedStations) {
         this.visitedStations = visitedStations;
+    }
+
+     public LinkedList<Ligne> getAllLignes() {
+        return allLignes;
+    }
+
+    public void setAllLignes(LinkedList<Ligne> allLignes) {
+        this.allLignes = allLignes;
     }
 
     public PriorityQueue<Adjacent> getClosed() {
@@ -91,17 +101,6 @@ public class Reseau {
     {
         return this.getVisitedStations().contains(s.getNumero());
     }
-
-   /* cette méthode informe si un chemin est explorable ***/
-   /* public boolean isPossiblePath(Station fin, Station s)
-    {
-        if(this.closed == null)
-            return true;
-        if(!this.closed.contains(fin))
-            return true;
-        //else if(this.closed.)
-        return false;
-    }*/
 
     public void afficher()
     {
@@ -174,7 +173,7 @@ public class Reseau {
 
     /** cette méthode trouve le plus court chemin entre deux stations données.
      cette synchronisation permet d'eviter de conflit pour la recherche parallele **/
-    public  synchronized void getChemin(Station debut, Station fin)
+    public  synchronized Station getChemin(Station debut, Station fin)
     {
         boolean trouve = false;
         Station end = null;
@@ -189,7 +188,7 @@ public class Reseau {
         /* on teste s'il n'y a pas d'incident a la station d'arrivée ***/
         if(!valideChemin(debut, fin))
         {
-            return;
+            return null;
         }
        /* on mets tous les adjacents de "debut" dans la liste closed ces adjacenst auront comme predecesseur le sommet "debut"**/
       for(Adjacent a : debut.getAdjacents())
@@ -244,19 +243,10 @@ public class Reseau {
                 ex.fillInStackTrace();
             }
         }
-      if(trouve)
-      {
-          end.afficher();
-          while(end.getPredecesseur() != null)
-          {
-              end = end.getPredecesseur();
-              end.afficher();
-          }
-      }
-      if(!trouve)
-          //p("L'accès à cette station est momentannement indisponible !\nAucune itinéraire ne permet de s'y rendre !");
+      
       this.getVisitedStations().clear();
       this.closed.clear();
+      return end;
     }
     
     public double getCost(Station s )
@@ -275,47 +265,148 @@ public class Reseau {
         }
         return cout;
     }
-    
-   public void essai()
-   {
-       /* creation de quelques stations
+
+    public void createLines()
+    {
+        Ligne L1 = new Ligne(1, "L1");
+        Ligne L2 = new Ligne(2, "L2");
+        Ligne L3 = new Ligne(1, "L3");
+        Ligne L4 = new Ligne(1, "L4");
+
+        L1.getListStations().add(getStation("A"));
+        L1.getListStations().add(getStation("I"));
+        L1.getListStations().add(getStation("D"));
+        L1.getListStations().add(getStation("F"));
+        L1.getListStations().add(getStation("G"));
+
+        L2.getListStations().add(getStation("A"));
+        L2.getListStations().add(getStation("H"));
+        L2.getListStations().add(getStation("C"));
+        L2.getListStations().add(getStation("D"));
+        L2.getListStations().add(getStation("E"));
+        L2.getListStations().add(getStation("G"));
+        L2.getListStations().add(getStation("R"));
+
+        L3.getListStations().add(getStation("I"));
+        L3.getListStations().add(getStation("B"));
+        L3.getListStations().add(getStation("C"));
+        L3.getListStations().add(getStation("O"));
+        L3.getListStations().add(getStation("G"));
+        L3.getListStations().add(getStation("K"));
+
+        L4.getListStations().add(getStation("M"));
+        L4.getListStations().add(getStation("I"));
+        L4.getListStations().add(getStation("N"));
+        L4.getListStations().add(getStation("E"));
+        L4.getListStations().add(getStation("K"));
+        L4.getListStations().add(getStation("X"));
+
+        this.allLignes.add(L1);
+        this.allLignes.add(L2);
+        this.allLignes.add(L3);
+        this.allLignes.add(L4);
+    }
+
+    public void createStations()
+    {
+        /* creation de quelques stations
         le nom et le temp d'arret **/
-       Station t1 = new Station("A", 3);
-       Station t2 = new Station("B", 4);
-       Station t3 = new Station("C", 5);
-       Station t4 = new Station("D", 6);
-       Station t5 = new Station("E", 5);
+       Station a = new Station("A", 5);
+       Station b = new Station("B", 3);
+       Station c = new Station("C", 4);
+       Station d = new Station("D", 4);
+       Station e = new Station("E", 5);
+       Station i = new Station("I", 6);
+       Station h = new Station("H", 2);
+       Station o = new Station("O", 3);
+       Station g = new Station("G", 6);
+       Station f = new Station("F", 2);
+       Station k = new Station("K", 3);
+       Station x = new Station("X", 7);
+       Station n = new Station("N", 3);
+       Station r = new Station("R", 8);
+       Station m = new Station("M", 5);
 
        /* ajout de quelque adjacents **/
-       t1.addAdjacent(new Adjacent(t2,5));
-       t1.addAdjacent(new Adjacent(t3,100));
-       t2.addAdjacent(new Adjacent(t3,50));
-       t2.addAdjacent(new Adjacent(t5,2));
-       t3.addAdjacent(new Adjacent(t4,2));
-       t4.addAdjacent(new Adjacent(t1,30));
-       t4.addAdjacent(new Adjacent(t5,13));
+       a.addAdjacent(new Adjacent(i,10));
+       a.addAdjacent(new Adjacent(h,9));
+       b.addAdjacent(new Adjacent(i,15));
+       b.addAdjacent(new Adjacent(c,12));
+       c.addAdjacent(new Adjacent(h,8));
+       c.addAdjacent(new Adjacent(d,12));
+       c.addAdjacent(new Adjacent(o,30));
+       d.addAdjacent(new Adjacent(i,15));
+       d.addAdjacent(new Adjacent(f,12));
+       d.addAdjacent(new Adjacent(e,13));
+       e.addAdjacent(new Adjacent(n,20));
+       e.addAdjacent(new Adjacent(g,25));
+       e.addAdjacent(new Adjacent(k,10));
+       f.addAdjacent(new Adjacent(g,8));
+       g.addAdjacent(new Adjacent(r,15));
+       g.addAdjacent(new Adjacent(k,10));
+       g.addAdjacent(new Adjacent(o,25));
+       i.addAdjacent(new Adjacent(m,8));
+       i.addAdjacent(new Adjacent(n,20));
+       k.addAdjacent(new Adjacent(x,9));
 
-     // t1.setIncident(true);
-      //t3.setIncident(true);
-       //System.out.println(t2.ppv().getNode().getNom()+" "+t2.ppv().getCost());
-       /* mise en place du reseau avec la station t1 comme debut **/
-       String s1 = Saisie.lireString("Donner la station de debut:");
-       String s2 = Saisie.lireString("Donner la station de fin:");
-      this.setStartStation(t1);
-       /* essai du changement de tete **/
-      // r.setStartStation(t1);
+       this.setStartStation(a);
        this.setReseau();
-       Station debut = this.getStation(s1);
-       Station fin = this.getStation(s2);
-      //t1.getAdjacents().getLast().afficher();
-       if(debut != null && fin != null)
-             this.getChemin(debut,fin);
-       else
-           Saisie.p("le nom des stations de debut et de fin doit etre diferent de null ");
-       //r.getClosed().poll().afficher();
+       
+    }
+   public void essai()
+   {
+      
+       createStations();
+       createLines();
 
-       //r.getClosed().peek().afficher();
-       this.afficher();
-      // r.getChemin(t3, t5);
+       Station debut = this.getStation("M");//this.getStation(s1);
+       Station fin = this.getStation("O");//this.getStation(s2);
+       
+       if(debut != null && fin != null)
+       {
+             Station tmp = this.getChemin(debut,fin);
+             if(tmp != null)
+                Saisie.p(tmp.chemin());
+       }
+       else
+           Saisie.p("Le nom des stations de debut et de fin doivent exister  ");
+      // this.afficher();
+   }
+
+   public LinkedList<Ligne> getLigne(LinkedList<Station> ls)
+   {
+       boolean trouve = false;
+       LinkedList<Ligne> tmp = new LinkedList<Ligne>();
+       LinkedList<Ligne> tmpDebut = new LinkedList<Ligne>();
+       LinkedList<Ligne> tmpFin = new LinkedList<Ligne>();
+       tmpDebut = (LinkedList<Ligne>) ls.clone();
+       tmpFin = (LinkedList<Ligne>) ls.clone();
+       for(Ligne l : this.allLignes)
+       {
+           if(l.getListStations().containsAll(ls))
+           {
+               Saisie.p(l.getNom());
+               trouve = true;
+               tmp.add(l);
+               //return l;
+           }
+       }
+
+       if(!trouve)
+       {
+           int taille = ls.size();
+           tmp.addAll(this.getLigne(ls));
+           for(int k = 0; k < taille /2; k++)
+           {
+               for(Ligne l : this.allLignes)
+               {
+                   LinkedList<Station> order = (LinkedList<Station>)ls.subList(k,taille - k+1);
+                   LinkedList<Station> reverse = (LinkedList<Station>)ls.subList(k+1,taille - 1 + k);
+                   
+               }
+           }
+           
+       }
+       return tmp;
    }
 }
