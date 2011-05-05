@@ -7,6 +7,7 @@ package projet_gl;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import outils.Saisie;
 
 public class Ligne {
     private int numero;
@@ -81,5 +82,32 @@ public class Ligne {
     public void getLine(LinkedList<Station> ls)
     {
         
+    }
+
+    public void afficher()
+    {
+        StringBuffer sb = new StringBuffer(this.nom);
+        Saisie.p(sb);
+    }
+    public void afficherExtreme()
+    {
+        if(this.listStations.size() > 0)
+            this.getListStations().getFirst().afficher();
+        if(this.listStations.size() > 0)
+            this.getListStations().getLast().afficher();
+    }
+
+    public void afficherTrajet()
+    {
+        String tmp = this.getNom()+": ";
+        if(this.getListStations().size() > 0)
+        {
+            for(Station s : this.getListStations())
+            {
+            tmp += s.getNom()+"-->";
+            }
+           
+            Saisie.p(tmp);
+        }
     }
 }

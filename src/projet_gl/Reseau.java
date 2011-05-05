@@ -14,6 +14,8 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.lang.Object;
 import java.util.Iterator;
+import java.util.List;
+import javax.net.ssl.SSLEngineResult.Status;
 import outils.Saisie;
 
 public class Reseau {
@@ -175,6 +177,7 @@ public class Reseau {
      cette synchronisation permet d'eviter de conflit pour la recherche parallele **/
     public  synchronized Station getChemin(Station debut, Station fin)
     {
+        //LinkedList<Station> listChemin = new LinkedList<Station>();
         boolean trouve = false;
         Station end = null;
         LinkedList<Adjacent> chemin = new LinkedList<Adjacent>();
@@ -360,13 +363,19 @@ public class Reseau {
        createLines();
 
        Station debut = this.getStation("M");//this.getStation(s1);
-       Station fin = this.getStation("O");//this.getStation(s2);
+       Station fin = this.getStation("X");//this.getStation(s2);
        
        if(debut != null && fin != null)
        {
              Station tmp = this.getChemin(debut,fin);
              if(tmp != null)
+             {
                 Saisie.p(tmp.chemin());
+                /*LinkedList<Station> ls = getChemin(tmp);
+                for(Station s : ls)
+                    s.afficher();*/
+                getLignes(tmp);
+             }
        }
        else
            Saisie.p("Le nom des stations de debut et de fin doivent exister  ");
@@ -408,5 +417,117 @@ public class Reseau {
            
        }
        return tmp;
+   }
+
+   public LinkedList<Station> getChemin(Station end)
+   {
+       LinkedList<Station> chemin = new LinkedList<Station>();
+       if(end == null)
+           return null;
+       if(end.getPredecesseur() == null)
+       {
+           chemin.add(end);
+           return chemin;
+       }
+       else
+       {
+           chemin.addAll(getChemin(end.getPredecesseur()));
+           chemin.add(end);
+       }
+       return chemin;
+   }
+   public void getLignes(Station end)
+   {
+       boolean trouve;
+       LinkedList<Station> chemin = new LinkedList<Station>();
+       LinkedList<Chemin> route = new LinkedList<Chemin>();
+
+       chemin = getChemin(end);
+       Iterator debut = chemin.iterator();
+       int index = 1;
+       int cout = 1;
+
+       for(int i = 0 ; i < chemin.size() ;i++)
+       {
+           for(int k = chemin.size() ; k > i; k--)
+           {
+                for(Ligne l : this.allLignes)
+               {
+                   Ligne ll = new Ligne(0, l.getNom());
+                   List<Station> tmp = new LinkedList<Station>();
+                   tmp = chemin.subList(i,k);
+                   //ll.setListStations(tmp);
+                   if(l.getListStations().containsAll(tmp))
+                   {
+                       Chemin ch = new Chemin(chemin.get(i),ll,tmp.size());
+                       ch.getLine().getListStations().addAll(tmp);
+                       update(route,ch);
+                   }
+               }
+           }
+       }
+       trouve = false;
+       Station st = new Station("");
+       Iterator iter = route.iterator();
+       if(iter.hasNext())
+       {
+            Chemin ch = (Chemin)iter.next();
+            ch.getLine().afficherTrajet();
+            st = ch.getLine().getListStations().getLast();
+       }
+      while(iter.hasNext() && !trouve)
+       {
+          Chemin ch = (Chemin)iter.next();
+          if(ch.getStation().equals(st))
+          {
+                ch.getLine().afficherTrajet();
+                st = ch.getLine().getListStations().getLast();
+           }
+          if(ch.getLine().getListStations().getLast().equals(end))
+             trouve = true;
+
+       }
+   }
+   public void getRoute(LinkedList<Chemin> route, Station end)
+   {
+       boolean trouve = false;
+       LinkedList<Station> chemin = new LinkedList<Station>();
+       chemin = getChemin(end);
+       Iterator iter = chemin.iterator();
+       while(iter.hasNext() && !trouve)
+       {
+           Station tmp = (Station)iter.next();
+           
+       }
+   }
+   public Ligne getStationLine(LinkedList<Chemin> route,Station s)
+   {
+       Iterator iter = route.iterator();
+       Chemin tmp = null;
+       boolean trouve = false;
+       while(iter.hasNext() && !trouve)
+       {
+            tmp = (Chemin)iter.next();
+           if(tmp.getStation().equals(s))
+               trouve = true;
+       }
+       return tmp.getLine();
+   }
+   public void update(LinkedList<Chemin> route, Chemin ch)
+   {
+       boolean trouve = false;
+       Iterator iter = route.iterator();
+       while(iter.hasNext() && !trouve)
+       {
+           Chemin tmp = (Chemin)iter.next();
+           if(tmp.getStation().getNom().compareTo(ch.getStation().getNom()) == 0)
+           {
+               if(tmp.getList().size() < ch.getList().size())
+                    tmp.setCount(ch.getList().size());
+               trouve = true;
+           }
+       }
+       if(!trouve)
+           route.add(ch);
    }
 }
