@@ -177,7 +177,7 @@ public class Reseau {
      cette synchronisation permet d'eviter de conflit pour la recherche parallele **/
     public  synchronized Station getChemin(Station debut, Station fin)
     {
-        //LinkedList<Station> listChemin = new LinkedList<Station>();
+       // LinkedList<Station> listChemin = new LinkedList<Station>();
         boolean trouve = false;
         Station end = null;
         LinkedList<Adjacent> chemin = new LinkedList<Adjacent>();
@@ -207,20 +207,25 @@ public class Reseau {
       /* tant que la liste closed n'est pas vide et le chemin le plus court n'est pas trouvé **/
         while(this.closed.size() != 0 && !trouve)
         {
+              //Saisie.p(this.closed.size());
               Adjacent a = closed.poll();/* on supprime la tete de liste et on le traite **/
               visit(a.getNode());
               try{
               /* Si le neud courant correspond au noeud d'arrivée on affiche le noeud et on arrete le boucle **/
-              if(a.getNode().equals(fin))
+              if(a.getNode().getNom().compareTo(fin.getNom()) == 0)
               {
-                  synchronized (this)
-                  {
+                 // synchronized (this)
+                 // {
                      chemin.add(a);
+                     Saisie.p("\nDepart: "+debut.getNom());
+                     Saisie.p("Arrivée: "+fin.getNom());
+                     Saisie.p("Cout: "+a.getCost());
                      end = a.getNode();
-                     a.afficher();
-                  }
+                    // a.afficher();
+                     //listChemin.add(a.getNode());
+                  //}
                   trouve = true;
-              }  
+              }
               else /* on traite les adjacents du noeuds en cours de traitement **/
               {
                   for(Adjacent aa : a.getNode().getAdjacents())
@@ -231,6 +236,7 @@ public class Reseau {
                            Adjacent tmp = new Adjacent(aa.getNode(),aa.getCost() + a.getCost() + a.getNode().getTempArret());
                            if(this.getClosed().contains(aa))
                            {
+                               //aa.afficher();
                                 if(getCost(aa.getNode()) > tmp.getCost())
                                     tmp.getNode().setPredecesseur(a.getNode());
                            }
@@ -246,13 +252,13 @@ public class Reseau {
                 ex.fillInStackTrace();
             }
         }
-      
+      //Saisie.p(listChemin.size());
       this.getVisitedStations().clear();
       this.closed.clear();
       return end;
     }
-    
-    public double getCost(Station s )
+
+   public double getCost(Station s )
     {
         boolean trouve = false;
         double cout = 0;
@@ -269,7 +275,7 @@ public class Reseau {
         return cout;
     }
 
-    public void createLines()
+   public void createLines()
     {
         Ligne L1 = new Ligne(1, "L1");
         Ligne L2 = new Ligne(2, "L2");
@@ -310,7 +316,7 @@ public class Reseau {
         this.allLignes.add(L4);
     }
 
-    public void createStations()
+   public void createStations()
     {
         /* creation de quelques stations
         le nom et le temp d'arret **/
@@ -354,32 +360,32 @@ public class Reseau {
 
        this.setStartStation(a);
        this.setReseau();
-       
+
     }
    public void essai()
    {
-      
+
        createStations();
        createLines();
+       String d = Saisie.lireString("DONNEZ LA STATION DE DEPART !");
+       String a = Saisie.lireString("DONNEZ LA STATION D'ARRIVEE !");
 
-       Station debut = this.getStation("M");//this.getStation(s1);
-       Station fin = this.getStation("X");//this.getStation(s2);
-       
+       Station debut = this.getStation(d);//this.getStation(s1);
+       Station fin = this.getStation(a);//this.getStation(s2);
+
        if(debut != null && fin != null)
        {
              Station tmp = this.getChemin(debut,fin);
              if(tmp != null)
              {
-                Saisie.p(tmp.chemin());
-                /*LinkedList<Station> ls = getChemin(tmp);
-                for(Station s : ls)
-                    s.afficher();*/
+                Saisie.p("\nChemin: "+tmp.chemin());
+                Saisie.p("\nLignes à emprunter: ");
                 getLignes(tmp);
              }
        }
        else
            Saisie.p("Le nom des stations de debut et de fin doivent exister  ");
-      // this.afficher();
+     // this.afficher();
    }
 
    public LinkedList<Ligne> getLigne(LinkedList<Station> ls)
@@ -411,10 +417,10 @@ public class Reseau {
                {
                    LinkedList<Station> order = (LinkedList<Station>)ls.subList(k,taille - k+1);
                    LinkedList<Station> reverse = (LinkedList<Station>)ls.subList(k+1,taille - 1 + k);
-                   
+
                }
            }
-           
+
        }
        return tmp;
    }
@@ -469,15 +475,18 @@ public class Reseau {
        trouve = false;
        Station st = new Station("");
        Iterator iter = route.iterator();
+       Chemin ch;
        if(iter.hasNext())
        {
-            Chemin ch = (Chemin)iter.next();
+            ch = (Chemin)iter.next();
             ch.getLine().afficherTrajet();
             st = ch.getLine().getListStations().getLast();
        }
+      if(!st.equals(end))
+      {
       while(iter.hasNext() && !trouve)
-       {
-          Chemin ch = (Chemin)iter.next();
+      {
+          ch = (Chemin)iter.next();
           if(ch.getStation().equals(st))
           {
                 ch.getLine().afficherTrajet();
@@ -486,6 +495,7 @@ public class Reseau {
           if(ch.getLine().getListStations().getLast().equals(end))
              trouve = true;
 
+       }
        }
    }
    public void getRoute(LinkedList<Chemin> route, Station end)
@@ -497,7 +507,7 @@ public class Reseau {
        while(iter.hasNext() && !trouve)
        {
            Station tmp = (Station)iter.next();
-           
+
        }
    }
    public Ligne getStationLine(LinkedList<Chemin> route,Station s)
