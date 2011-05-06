@@ -132,7 +132,13 @@ public final class Station implements Comparable<Station>{
     public Station getPredecesseur() {
         return predecesseur;
     }
-
+    public void updatePredecesseur(Station s)
+    {
+        Station tmp = this;
+        while(tmp.getPredecesseur() != null)
+            tmp = tmp.getPredecesseur();
+        tmp.setPredecesseur(s);
+    }
    /*cette methode teste si deux sommets sont adjacents **/
    public boolean isAdjacent(Station s)
    {
@@ -166,7 +172,7 @@ public final class Station implements Comparable<Station>{
             return false;
         }
         final Station other = (Station) obj;
-        if ((this.nom == null) ? (other.nom != null) : !this.nom.equals(other.nom)) {
+        if ((this.nom == null) ? (other.nom != null) : !this.nom.toUpperCase().equals(other.nom.toUpperCase())) {
             return false;
         }
         return true;

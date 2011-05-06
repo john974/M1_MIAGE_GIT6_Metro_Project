@@ -6,6 +6,7 @@
 package outils;
 
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -37,5 +38,31 @@ public class Saisie{
     public static void p(Object o)
     {
         System.out.println(o);
+    }
+
+    public static String menu(StringBuffer menu, String pattern)
+    {
+        String txt = "";
+        System.out.println(menu);
+        Scanner sc ;
+        do
+        {
+            try
+            {
+                sc = new Scanner(System.in);
+                txt = sc.nextLine();
+            }
+            catch(Exception ex)
+            {
+                ex.fillInStackTrace();
+            }
+            if(!Pattern.matches(pattern, txt))
+            {
+                p("!!!!!! Saisie Incorrect !!!!! ");
+                p("==>Selection: ");
+            }
+        }while(!Pattern.matches(pattern, txt));
+        return txt.trim();/* on supprime les espaces vides**/
+
     }
 }

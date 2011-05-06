@@ -20,6 +20,7 @@ import outils.Saisie;
 
 public class Reseau {
 
+    private double coutDeplacement = 0;
     private Station startStation; /* la station de debut du reseau */
     private LinkedList<Station> allStations = new LinkedList<Station>(); /* la liste de toute les stations */
     private LinkedList<Integer> visitedStations = new LinkedList<Integer>(); /* la liste des stations visités pour la recherche du chemin**/
@@ -73,6 +74,7 @@ public class Reseau {
     /* ajoute la liste des noeuds aux reseaux **/
     public void setReseau()
     {
+        this.getVisitedStations().clear();
         this.allStations.add(startStation);
         visit(startStation);
         for(Adjacent a : this.startStation.getAdjacents())
@@ -80,6 +82,7 @@ public class Reseau {
             if(!this.visitedStations.contains(a.getNode().getNumero()))
                ajouter(a.getNode());
         }
+        this.getVisitedStations().clear();
     }
 
     public void ajouter(Station s)
@@ -146,33 +149,43 @@ public class Reseau {
     {
         if(!this.getAllStations().contains(fin))
         {
-            Saisie.p("Le reseau ne contient pas la station d'arrivée");
+            //Saisie.p("Le reseau ne contient pas la station d'arrivée");
             return false;
         }
         if(!this.getAllStations().contains(debut))
         {
-            Saisie.p("Le reseau ne contient pas la station de depart ");
+            //Saisie.p("Le reseau ne contient pas la station de depart ");
             return false;
         }
         if(fin.isIncident())
         {
-            Saisie.p("Il y a un incident a la station d'arrivée\nImpossible d'y aller !");
+            //Saisie.p("Il y a un incident a la station d'arrivée\nImpossible d'y aller !");
             return false;
         }
         if(debut.isIncident())
         {
-            Saisie.p("Il y a un incident a la station de depart\nImpossible de passer par cette station !");
+            //Saisie.p("Il y a un incident a la station de depart\nImpossible de passer par cette station !");
             return false;
         }
 
         if(debut.equals(fin))
         {
-            Saisie.p("La station de debut et de fin sont identiques\nDonner deux station differentes svp !");
+            //Saisie.p("La station de debut et de fin sont identiques\nDonner deux station differentes svp !");
             return false;
         }
         return true;
     }
 
+    public boolean valide(LinkedList<String> tmp)
+    {
+        for(String s : tmp)
+        {
+            Station tp = this.getStation(s);
+            if(!this.getAllStations().contains(tp))
+                return false;
+        }
+        return true;
+    }
     /** cette méthode trouve le plus court chemin entre deux stations données.
      cette synchronisation permet d'eviter de conflit pour la recherche parallele **/
     public  synchronized Station getChemin(Station debut, Station fin)
@@ -188,11 +201,8 @@ public class Reseau {
         visit(debut); /* on met le sommet debut à visiter */
         debut.setPredecesseur(null);
 
-        /* on teste s'il n'y a pas d'incident a la station d'arrivée ***/
-        if(!valideChemin(debut, fin))
-        {
-            return null;
-        }
+        
+        
        /* on mets tous les adjacents de "debut" dans la liste closed ces adjacenst auront comme predecesseur le sommet "debut"**/
       for(Adjacent a : debut.getAdjacents())
       {
@@ -216,10 +226,8 @@ public class Reseau {
               {
                  // synchronized (this)
                  // {
-                     chemin.add(a);
-                     Saisie.p("\nDepart: "+debut.getNom());
-                     Saisie.p("Arrivée: "+fin.getNom());
-                     Saisie.p("Cout: "+a.getCost());
+                     chemin.add(a);          
+                     this.coutDeplacement = a.getCost();
                      end = a.getNode();
                     // a.afficher();
                      //listChemin.add(a.getNode());
@@ -279,8 +287,8 @@ public class Reseau {
     {
         Ligne L1 = new Ligne(1, "L1");
         Ligne L2 = new Ligne(2, "L2");
-        Ligne L3 = new Ligne(1, "L3");
-        Ligne L4 = new Ligne(1, "L4");
+        Ligne L3 = new Ligne(3, "L3");
+        Ligne L4 = new Ligne(4, "L4");
 
         L1.getListStations().add(getStation("A"));
         L1.getListStations().add(getStation("I"));
@@ -362,32 +370,64 @@ public class Reseau {
        this.setReseau();
 
     }
-   public void essai()
+   public void init()
    {
-
        createStations();
        createLines();
-       String d = Saisie.lireString("DONNEZ LA STATION DE DEPART !");
-       String a = Saisie.lireString("DONNEZ LA STATION D'ARRIVEE !");
+   }
+   public void plusCourtChemin(String d,String a)
+   {
+      // String d = Saisie.lireString("DONNEZ LA STATION DE DEPART !");
+       //String a = Saisie.lireString("DONNEZ LA STATION D'ARRIVEE !");
 
        Station debut = this.getStation(d);//this.getStation(s1);
        Station fin = this.getStation(a);//this.getStation(s2);
 
-       if(debut != null && fin != null)
+       /* on teste s'il n'y a pas d'incident a la station d'arrivée ***/
+       if(valideChemin(debut, fin))
        {
              Station tmp = this.getChemin(debut,fin);
              if(tmp != null)
              {
+                Saisie.p("xxxxxxxxxxxxxxxx REPONSE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                Saisie.p("Depart: "+debut.getNom());
+                Saisie.p("Arrivée: "+fin.getNom());
+                Saisie.p("Cout: "+this.coutDeplacement);
                 Saisie.p("\nChemin: "+tmp.chemin());
                 Saisie.p("\nLignes à emprunter: ");
                 getLignes(tmp);
+                Saisie.p("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
              }
        }
        else
-           Saisie.p("Le nom des stations de debut et de fin doivent exister  ");
+       {
+           Saisie.p("\nxxxxxxxxxxxxxxxxxx REPONSE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+           Saisie.p(" Les stations de debut et de fin doivent exister !         x");
+           Saisie.p("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+       }
      // this.afficher();
    }
 
+   public void plusCourtChemin(LinkedList<String> ensemble)
+   {
+       Station tmp = null;
+       if(valide(ensemble))
+       {
+       String d = ensemble.removeFirst();
+           while(ensemble.size() > 0)
+           {
+               String f = ensemble.getFirst();
+               this.plusCourtChemin(d, f);
+               d = ensemble.removeFirst();
+           }
+       }
+       else
+       {
+           Saisie.p("\nxxxxxxxxxxxxxxxxxx REPONSE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+           Saisie.p(" L'ensemble des stations de l'itinéraire doivent exister ! x");
+           Saisie.p("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+       }
+   }
    public LinkedList<Ligne> getLigne(LinkedList<Station> ls)
    {
        boolean trouve = false;
