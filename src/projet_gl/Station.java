@@ -22,12 +22,18 @@ public final class Station implements Comparable<Station>{
     private int numero;
     private String nom;
     private double tempArret;
-    private boolean incident = false;
+    private boolean incident ;
     private Station predecesseur = null;
     private LinkedList<Adjacent> adjacents = new LinkedList<Adjacent>();
 
     public Station(String nom) {
         this.nom = nom;
+    }
+
+    public Station( String nom,int numero, boolean incident) {
+        this.numero = numero;
+        this.nom = nom;
+        this.incident = incident;
     }
 
     

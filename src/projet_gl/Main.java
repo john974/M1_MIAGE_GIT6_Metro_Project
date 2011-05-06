@@ -14,6 +14,7 @@ public class Main {
 
         Reseau r = new Reseau();
         r.init();
+        r.afficher();
         LinkedList<String> ensemble = new LinkedList<String>();
         Saisie.p("************************************************************");
         Saisie.p("Bienvenue sur le reseau de transport de Paris              *");
@@ -23,7 +24,7 @@ public class Main {
         StringBuffer menu = new StringBuffer();
 
         //Scanner scanner = new Scanner (System.in);
-        int selection = 0;
+        int selection = 2;
 
         menu.append("\n**** Faites une selection: *********************************\n");
         menu.append("[1]:RECHERCHE DE L'ITINERAIRE LE PLUS RAPIDE               *\n");
@@ -35,7 +36,7 @@ public class Main {
         String pattern = "[1-4]";
         do
         {
-            selection = Integer.parseInt(Saisie.menu(menu, pattern));
+           // selection = Integer.parseInt(Saisie.menu(menu, pattern));
             switch(selection ){
                 case 1:
                     System.out.println("***** RECHERCHE DE L'ITINERAIRE LE PLUS RAPIDE *****");
@@ -52,6 +53,14 @@ public class Main {
                  System.out.println("Veuillez choisir votre statioin d'arrivée");
                  str = scanner.nextLine();
                  System.out.println("Votre itinéraire");*/
+                
+                 String depart = Saisie.lireString("DONNEZ LA STATION DE DEPART !");
+                 String arrivee = Saisie.lireString("DONNEZ LA STATION D'ARRIVEE !");
+                 Station dep = r.getStation(depart);
+                  Station arr = r.getStation(arrivee);
+                 r.MoinsDeChangement(dep,arr);
+
+
                  break;
 
 
