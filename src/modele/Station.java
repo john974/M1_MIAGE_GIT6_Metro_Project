@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package projet_gl;
+package modele;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,19 +82,36 @@ public final class Station implements Comparable<Station>{
         Saisie.p("Nom: "+this.getNom()+"\nNumero: "+this.getNumero()+"\n");
     }
 
-    public StringBuffer  chemin()
+    @Override
+    public String toString() {
+        String res = "Station{ " + "numero = " + numero + "\nnom = " + nom + "\ntempArret = " + tempArret + "\nincident = " + incident+"\nadjacents = ";
+        for(Adjacent a : this.getAdjacents())
+            res += "["+a.getNode().getNom()+"]";
+        return res;
+    }
+
+
+    public String  chemin()
     {
         StringBuffer s = new StringBuffer("");
         if(this.predecesseur == null)
-            return s.append(new StringBuffer(this.nom+""));
+            return s.append(new StringBuffer(this.nom+"")).toString();
            // return new StringBuffer("-");
         else
             s.append(this.predecesseur.chemin()).append("-").append(this.nom);
 
-        return s;
+        return s.toString();
     }
 
-    /* ctte methode ajoute un adjacents a la liste des adjacents.**/
+    /** cette methode ajoute un adjacent a la liste des adjacents.
+     * chaque station a des voisins dont il connait l'existance.
+     * Il faut noter qu'a chaque fois une station A devient adjacent avec une station B,
+     * la station B devient automatiquement adjacent avec la station A, i.e la station B ajoute aussi A
+     * dans sa liste des stations.
+     * @author groupe de projet
+     * @param un objet de type station
+     * @return void.
+     */
     public void addAdjacent(Adjacent A)
     {
         /* si la station courante contient deja A comme Adjacent, on ne l'ajoute pas
@@ -116,7 +133,11 @@ public final class Station implements Comparable<Station>{
             A.getNode().sortAdjacents();
         }
     }
-    /* cettte fonction calcul la distance qui separe deux sommets adjacents .**/
+    /** cettte fonction calcul la distance qui separe deux sommets adjacents.
+     * @author groupe de projet
+     * @param un objet de type double
+     * @return la distance qui sépapre les deux station ou -1 si les deux stations ne sont pas des voisins.
+     */
     public double distance(Station s)
     {
         double dist = -1;
@@ -132,6 +153,14 @@ public final class Station implements Comparable<Station>{
     public Station getPredecesseur() {
         return predecesseur;
     }
+     /** cettte fonction est utilisé dans le calcul du plus court chemin.
+      * elle met à jour un sommet qui exsite déja dans l'arbre des chemins explorables.
+      * Cette opération est effectué si le sommet en qustion peut être atteinte avec un cout minimal
+      * en passant par un autre sommet; ce dernier sommet devient son predecesseur
+     * @author groupe de projet
+     * @param un objet de type station
+     * @return la distance qui sépapre les deux station ou -1 si les deux stations ne sont pas des voisins.
+     */
     public void updatePredecesseur(Station s)
     {
         Station tmp = this;
@@ -185,7 +214,12 @@ public final class Station implements Comparable<Station>{
         return hash;
     }
     
-    /*definition d'une méthode de trie des sommets adjacents **/
+    /** cette procedure trie la liste des sommets adjacents au sommets courants.
+     * Le trie est effectue en fonction de la distance qui les sépare
+     * @author groupe de projet
+     * @param -
+     * @return -.
+     */
     public void sortAdjacents()
     {
         Collections.sort(adjacents);

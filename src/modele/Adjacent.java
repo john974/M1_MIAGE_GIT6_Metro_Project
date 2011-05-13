@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package projet_gl;
+package modele;
 
 public final class Adjacent implements Comparable<Adjacent>{
     private Station node;
@@ -11,7 +11,6 @@ public final class Adjacent implements Comparable<Adjacent>{
 
     public Adjacent() {
     }
-
 
     public Adjacent(Station nodeTo, double cost) {
         this.node = nodeTo;
@@ -40,6 +39,10 @@ public final class Adjacent implements Comparable<Adjacent>{
         System.out.println("Nom: "+this.getNode().getNom()+"\nCout: "+this.getCost());
     }
 
+    @Override
+    public String toString() {
+        return "Adjacent{" + "node = " + node + "cost = " + cost + '}';
+    }
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

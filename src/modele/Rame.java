@@ -1,6 +1,6 @@
 
 
-package projet_gl;
+package modele;
 
 public class Rame {
     private int numero;

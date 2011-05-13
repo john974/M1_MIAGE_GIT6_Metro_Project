@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package projet_gl;
+package modele;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -97,7 +97,7 @@ public class Ligne {
             this.getListStations().getLast().afficher();
     }
 
-    public void afficherTrajet()
+    public String afficherTrajet()
     {
         String tmp = this.getNom()+": ";
         if(this.getListStations().size() > 0)
@@ -107,8 +107,23 @@ public class Ligne {
             tmp += s.getNom()+"-->";
             }
            
-            Saisie.p(tmp);
+            //Saisie.p(tmp);
         }
+        return tmp;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer res = new StringBuffer("\nLigne : ");
+        res.append(this.nom);
+        res.append("\n\tStations : ");
+        for(Station s : this.listStations)
+        {
+             res.append("[");
+             res.append(s.getNom());
+             res.append("]");
+        }
+        return res.toString();
     }
     
 }
