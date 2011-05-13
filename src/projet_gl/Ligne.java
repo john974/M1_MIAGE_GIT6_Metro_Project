@@ -97,6 +97,15 @@ public class Ligne {
             this.getListStations().getLast().afficher();
     }
 
+    public void afficherline(Ligne l){
+        System.out.println("Taille de la ligne "+ l.listStations.size());
+        if (l.listStations.size() > 0){
+        for(Station s :l.listStations){
+
+            System.out.println("-\n"+s.getNumero());
+        }
+        }
+    }
     public void afficherTrajet()
     {
         String tmp = this.getNom()+": ";
