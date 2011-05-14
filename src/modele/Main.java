@@ -14,11 +14,10 @@ public class Main {
 
         Reseau r = new Reseau();
         r.init();
-<<<<<<< HEAD
-        r.afficher();
-=======
+
+
         Saisie.p(r);//r.toString();
->>>>>>> 8b5f46af8dc4dad7fc6d2827452f28249c053d02
+
         LinkedList<String> ensemble = new LinkedList<String>();
         Saisie.p("************************************************************");
         Saisie.p("Bienvenue sur le reseau de transport de Paris              *");
