@@ -97,7 +97,7 @@ public class Ligne {
             this.getListStations().getLast().afficher();
     }
 
-//*<<<<<<< HEAD
+
     public void afficherline(Ligne l){
         System.out.println("Taille de la ligne "+ l.listStations.size());
         if (l.listStations.size() > 0){
@@ -107,10 +107,9 @@ public class Ligne {
         }
         }
     }
-   // public void afficherTrajet()
-//=======
+
+
     public String afficherTrajet()
-//>>>>>>> 8b5f46af8dc4dad7fc6d2827452f28249c053d02
     {
         String tmp = this.getNom()+": ";
         if(this.getListStations().size() > 0)

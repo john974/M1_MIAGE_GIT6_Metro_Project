@@ -13,11 +13,9 @@ public class Main {
     public static void main(String[] args) {
 
         Reseau r = new Reseau();
-        r.init();
-
-
-        Saisie.p(r);//r.toString();
-
+       
+       r.init();
+       //Saisie.p(r.getStation("PointeDuLac").toString());
         LinkedList<String> ensemble = new LinkedList<String>();
         Saisie.p("************************************************************");
         Saisie.p("Bienvenue sur le reseau de transport de Paris              *");
@@ -27,20 +25,21 @@ public class Main {
         StringBuffer menu = new StringBuffer();
 
         //Scanner scanner = new Scanner (System.in);
-        int selection = 2;
+        int selection = 0;
 
         menu.append("\n**** Faites une selection: *********************************\n");
         menu.append("[1]:RECHERCHE DE L'ITINERAIRE LE PLUS RAPIDE               *\n");
         menu.append("[2]:ITINERAIRE AVEC LE MOINS DE CHANGEMENTS DE LIGNES      *\n");
         menu.append("[3]:ITINERAIRE EN PASSANT PAR CERTAINES STATIONS           *\n");
-        menu.append("[4]:ADMINISTRATION                                         *\n");
-        menu.append("[5]:EXIT                                                   *\n");
+        menu.append("[4]:AFFIVCHER LE RESEAU                                    *\n");
+        menu.append("[5]:ADMINISTRATION                                         *\n");
+        menu.append("[6]:EXIT                                                   *\n");
         menu.append("************************************************************\n");
         menu.append("\n==>Selection: ");
-        String pattern = "[1-5]";
+        String pattern = "[1-6]";
         do
         {
-           // selection = Integer.parseInt(Saisie.menu(menu, pattern));
+           selection = Integer.parseInt(Saisie.menu(menu, pattern));
             switch(selection ){
                 case 1:
                     System.out.println("***** RECHERCHE DE L'ITINERAIRE LE PLUS RAPIDE *****");
@@ -82,29 +81,21 @@ public class Main {
                  a = Saisie.lireString("DONNEZ LA STATION D'ARRIVEE !");
                  ensemble.add(a);
                  Saisie.p(r.plusCourtChemin(ensemble));
-                /* str = scanner.nextLine();
-                 System.out.println("Veuillez choisir votre station de depart" );
-                 str = scanner.nextLine();
-                 System.out.println("Veuillez choisir votre statioin d'arrivée");
-                 str = scanner.nextLine();
-                 System.out.println("Veuillez saisir les stations intermédiaires");
-                 str = scanner.nextLine();
-                 System.out.println("Votre trajet est:");*/
                 break;
                 case 4:
+                    Saisie.p(r.toString());
+                break;
+                case 5:
                     Saisie.p("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                     Saisie.p("Ce module était prévu pour administrer le reseau, c'est a \n"
                             + "dire ajouter et modifier les stations et les lignes.\n"
                             + "Cependant elle n'a pu être impléménté par manque de temps !");
                     Saisie.p("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                 break;
-                case 5:
+                case 6:
                     Saisie.p("==> Merci et à Bientot <==");
                 break;
              }
-        }while(selection != 5);
-      
-      // r.essai();
+        }while(selection != 6);
     }
-
 }
