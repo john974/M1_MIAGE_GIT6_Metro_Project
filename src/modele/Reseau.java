@@ -50,7 +50,11 @@ public class Reseau {
     public void setAllStations(LinkedList<Station> allStations) {
         this.allStations = allStations;
     }
-
+    /** cettte procedure itialise un sommet par defaut au reseau de stations.
+     * @author groupe de projet
+     * @param un objet de type station
+     * @return -.
+     */
     public void setStartStation(Station startStation) {
         this.startStation = startStation;
     }
@@ -71,7 +75,14 @@ public class Reseau {
         return closed;
     }
 
-    /* ajoute la liste des noeuds aux reseaux **/
+    /** cettte procedure ajoute la liste des noeuds au reseau de station.
+     *  on ajoute la station de debut, on le marque. En suite on ajoute tous ses voisins et le processus et
+     * recursif. A partir du sommet de depart on ajoute tous les sommets aux reseaux. Il faut initialiser le
+     * sommet du reseau avant d'appeler cette procedure.
+     * @author groupe de projet
+     * @param -
+     * @return -.
+     */
     public void setReseau()
     {
         this.getVisitedStations().clear();
@@ -80,23 +91,37 @@ public class Reseau {
         for(Adjacent a : this.startStation.getAdjacents())
         {
             if(!this.visitedStations.contains(a.getNode().getNumero()))
+            {
                ajouter(a.getNode());
+            }
         }
         this.getVisitedStations().clear();
     }
 
+    /** Cette métode ajoute une station au réseau ainsi que ses voisins.
+     * @autor group de travail
+     * @param un objet de type station
+     * @return
+     */
     public void ajouter(Station s)
     {
         visit(s);
-        this.allStations.add(s);
+        this.getAllStations().add(s);
         for(Adjacent a : s.getAdjacents())
         {
             if(!(this.visitedStations.contains(a.getNode().getNumero())))
-                ajouter(a.getNode());
+            {
+                ajouter(a.getNode());            
+            }
         }
     }
 
-    /* cette met un sommet à visiter **/
+    /** cette procédure permet de marquer une station comme visité.
+     * Il est utilisé par les fonctions de recherche de chemin entre autre
+     * @author groupe de travail
+     * @param un objet de type station
+     * @return -.
+     */
     private void visit(Station s)
     {
 	this.visitedStations.add(s.getNumero());
@@ -126,12 +151,34 @@ public class Reseau {
         Saisie.p("------------------");
     }
 
+    @Override
+    public String toString() {
+        StringBuffer res = new StringBuffer("**** L'ENSEMBLE DES STATIONS DU RESEAU REGROUPEES PAR LIGNE *****\n");
+        for(Ligne l: this.getAllLignes())
+        {
+           // l.getListStations().size();
+            res.append(l.toString());
+        }
+        res.append("\n********************************************************************\n");
+        return res.toString();
+    }
+
+    /** Cette fonction retourne la reference correspondance a la station passé en paramètre.
+     * La comparaiason porte sur le nom de la station
+     * @param un objet de type station
+     * @return un objet de type station
+     */
     public Station getStation(Station s)
     {
         return this.getAllStations().get(this.allStations.indexOf(s));
     }
 
-    /** cette méthode retourne la  correspondant au nom donné par l'utilisateur**/
+     /** Cette fonction retourne la station dont le nom correspond au paramètre de la fonction.
+      * C'est une fonction de recherche, la recherche porte sur le nom de la station
+     * La comparaiason porte sur le nom de la station
+     * @param un objet de type String
+     * @return un objet de type station
+     */
     public Station getStation(String nom)
     {
         int pos = -1;
@@ -144,7 +191,12 @@ public class Reseau {
         return this.getAllStations().get(pos);
     }
 
-    /* cette méthode valide les stations de depart et d'arrivée **/
+    /** Cette fonction booleenne valide une recherche de chemin. Elle verifie que les stations de debut et de fin
+     * se trouve toutes dans le reseau.
+     * @param Station debut
+     * @param Station fin
+     * @return true || false
+     */
     public boolean valideChemin(Station debut, Station fin)
     {
         if(!this.getAllStations().contains(fin))
@@ -176,24 +228,35 @@ public class Reseau {
         return true;
     }
 
-    public boolean valide(LinkedList<String> tmp)
+    /** Cette fonction booleenne valide une recherche de chemin. Elle verifie que les stations
+     * se trouvent toutes dans le reseau. Elle intervient dans le cas où on veut passé par plusieurs stations.
+     * @param LinkedList<String>: ensemble des sommets par lesquelles on veut passer. On donne juste les noms des stations.
+     * @return true si toutes les stations sont dans le reseau
+     * @return false si au moins une station n'existe pas dans le reseau
+     */
+    public boolean valideChemin(LinkedList<String> tmp)
     {
         for(String s : tmp)
         {
             Station tp = this.getStation(s);
-            if(!this.getAllStations().contains(tp))
+            if(!(this.getAllStations().contains(tp)))
                 return false;
         }
         return true;
     }
-    /** cette méthode trouve le plus court chemin entre deux stations données.
-     cette synchronisation permet d'eviter de conflit pour la recherche parallele **/
+    /** Cette méthode trouve le plus court chemin entre deux stations données.
+     * Elle retourne une des stations liés avec des predecesseurs formant le chemin à
+     * suivre. la synchronisation permet d'eviter de conflit pour la recherche parallele.
+     * @param Station debut
+     * @param Station fin
+     * @return une station avec des predecesseurs
+     */
     public  synchronized Station getChemin(Station debut, Station fin)
     {
        // LinkedList<Station> listChemin = new LinkedList<Station>();
         boolean trouve = false;
         Station end = null;
-        LinkedList<Adjacent> chemin = new LinkedList<Adjacent>();
+       // LinkedList<Adjacent> chemin = new LinkedList<Adjacent>();
         /** On initialise la tete de reseau à "debut" **/
         this.setStartStation(debut);
         this.getVisitedStations().clear();
@@ -220,15 +283,16 @@ public class Reseau {
               //Saisie.p(this.closed.size());
               Adjacent a = closed.poll();/* on supprime la tete de liste et on le traite **/
               visit(a.getNode());
+             // a.getNode().ad
               try{
               /* Si le neud courant correspond au noeud d'arrivée on affiche le noeud et on arrete le boucle **/
               if(a.getNode().getNom().compareTo(fin.getNom()) == 0)
               {
                  // synchronized (this)
                  // {
-                     chemin.add(a);
-                     this.coutDeplacement = a.getCost();
+                     //chemin.add(a);
                      end = a.getNode();
+                     this.coutDeplacement = a.getCost();
                     // a.afficher();
                      //listChemin.add(a.getNode());
                   //}
@@ -283,12 +347,14 @@ public class Reseau {
         return cout;
     }
 
+   /** Cette procédure permet de créer l'ensemble des lignes du reseau. Elle ajoute aux
+    * differentes lignes leurs stations
+    * @param -
+    * @return -
+    */
    public void createLines()
     {
-        /*Ligne L1 = new Ligne(1, "L1");
-        Ligne L2 = new Ligne(2, "L2");
-        Ligne L3 = new Ligne(3, "L3");
-        Ligne L4 = new Ligne(4, "L4");*/
+       
        Ligne ligne1 = new Ligne(1, "Ligne 1");
        Ligne ligne4 = new Ligne(1, "Ligne 4");
        Ligne ligne8 = new Ligne(1, "Ligne 8");
@@ -355,13 +421,19 @@ public class Reseau {
             ligne14.getListStations().add(this.getStation("Bercy"));
             ligne14.getListStations().add(this.getStation("Olympiades"));
 
-            this.allLignes.add(ligne1);
-            this.allLignes.add(ligne4);
-            this.allLignes.add(ligne8);
-            this.allLignes.add(ligne12);
-            this.allLignes.add(ligne14);
+            this.getAllLignes().add(ligne1);
+            this.getAllLignes().add(ligne4);
+            this.getAllLignes().add(ligne8);
+            this.getAllLignes().add(ligne12);
+            this.getAllLignes().add(ligne14);
     }
-
+    /**
+    * Cette procédures crée les stations du reseau et déclare les stations adjacents.
+    * Elle initialise la tête du reseau de station à la fin et et met le reseau en place.
+    * Pour ces deux dernieres actions, la méthode appelle les fonctions <setStartStation(Station a)> et <setReseau>
+    * @param
+    * @return
+    */
    public void createStations()
     {
        // Stations surtout pour la ligne 1
@@ -420,118 +492,115 @@ public class Reseau {
         chateauDeVincennes.addAdjacent(new Adjacent (nation, 1));
         nation.addAdjacent(new Adjacent (reuillyDiderot, 4));
         reuillyDiderot.addAdjacent(new Adjacent (gareDeLyon, 4));
+        reuillyDiderot.addAdjacent(new Adjacent (bastille, 2));
+        reuillyDiderot.addAdjacent(new Adjacent (liberte, 2));
         gareDeLyon.addAdjacent(new Adjacent (bastille, 5));
+        gareDeLyon.addAdjacent(new Adjacent (chatelet, 6));
+        gareDeLyon.addAdjacent(new Adjacent (bercy, 4));
         bastille.addAdjacent(new Adjacent (chatelet, 2));
+        bastille.addAdjacent(new Adjacent (republique, 3));
         chatelet.addAdjacent(new Adjacent (tuileries, 4));
+        chatelet.addAdjacent(new Adjacent (pyramides, 7));
         tuileries.addAdjacent(new Adjacent (concorde, 2));
         concorde.addAdjacent(new Adjacent (argentine, 1));
+        concorde.addAdjacent(new Adjacent (invalides, 2));
+        concorde.addAdjacent(new Adjacent (madeleine, 2));
+        concorde.addAdjacent(new Adjacent (rennes, 3));
         argentine.addAdjacent(new Adjacent (laDefense, 3));
-
-            //Sur la ligne 4
-        porteDeClignancourt.addAdjacent(new Adjacent (marcadetPoissonniers, 1));
-        marcadetPoissonniers.addAdjacent(new Adjacent (gareDuNord, 1));
-	gareDuNord.addAdjacent(new Adjacent (strasbourgSaintDenis, 2));
-        strasbourgSaintDenis.addAdjacent(new Adjacent (lesHalles, 5));
-        lesHalles.addAdjacent(new Adjacent (cite, 1));
-        cite.addAdjacent(new Adjacent (montparnasseBienvenue, 3));
-        montparnasseBienvenue.addAdjacent(new Adjacent (alesia, 2));
-        alesia.addAdjacent(new Adjacent (porteDOrleans, 1));
 
             //Sur la ligne 8
         balard.addAdjacent(new Adjacent (commerce, 3));
         commerce.addAdjacent(new Adjacent (invalides, 2));
-        invalides.addAdjacent(new Adjacent (concorde, 2));
-        concorde.addAdjacent(new Adjacent (madeleine, 2));
+            //Sur la ligne 4
         madeleine.addAdjacent(new Adjacent (opera, 6));
-        opera.addAdjacent(new Adjacent (strasbourgSaintDenis, 3));
-        strasbourgSaintDenis.addAdjacent(new Adjacent (republique, 5));
-        republique.addAdjacent(new Adjacent (bastille, 3));
-        bastille.addAdjacent(new Adjacent (reuillyDiderot, 2));
-        reuillyDiderot.addAdjacent(new Adjacent (liberte, 2));
-        liberte.addAdjacent(new Adjacent (creteilPointeDuLac, 2));
-
-		//Sur la ligne 12
-        porteDeLaChapelle.addAdjacent(new Adjacent (marcadetPoissonniers, 2));
-        marcadetPoissonniers.addAdjacent(new Adjacent (pigalle, 2));
-        pigalle.addAdjacent(new Adjacent (saintLazare, 3));
-        saintLazare.addAdjacent(new Adjacent (madeleine, 10));
-        madeleine.addAdjacent(new Adjacent (concorde, 2));
-        concorde.addAdjacent(new Adjacent (rennes, 3));
-        rennes.addAdjacent(new Adjacent (montparnasseBienvenue, 3));
-        montparnasseBienvenue.addAdjacent(new Adjacent (convention, 3));
-	convention.addAdjacent(new Adjacent (mairieDIssy, 1));
-
-		//Sur la ligne 14
-        
-        saintLazare.addAdjacent(new Adjacent(madeleine, 6));
         madeleine.addAdjacent(new Adjacent (pyramides, 3));
-        pyramides.addAdjacent(new Adjacent (chatelet, 7));
-        chatelet.addAdjacent(new Adjacent (gareDeLyon, 6));
-        gareDeLyon.addAdjacent(new Adjacent (bercy, 4));
+        madeleine.addAdjacent(new Adjacent (saintLazare, 10));
+        opera.addAdjacent(new Adjacent (strasbourgSaintDenis, 3));
+        strasbourgSaintDenis.addAdjacent(new Adjacent (lesHalles, 5));
+        strasbourgSaintDenis.addAdjacent(new Adjacent (republique, 5));
+        strasbourgSaintDenis.addAdjacent(new Adjacent (gareDuNord, 2));
+        liberte.addAdjacent(new Adjacent (creteilPointeDuLac, 2));
+        saintLazare.addAdjacent(new Adjacent (pigalle, 3));
         bercy.addAdjacent(new Adjacent (olympiades, 3));
+        porteDeLaChapelle.addAdjacent(new Adjacent (marcadetPoissonniers, 2));
+        porteDeClignancourt.addAdjacent(new Adjacent (marcadetPoissonniers, 1));
+        marcadetPoissonniers.addAdjacent(new Adjacent (pigalle, 2));
+        marcadetPoissonniers.addAdjacent(new Adjacent (gareDuNord, 1));
+	rennes.addAdjacent(new Adjacent (montparnasseBienvenue, 3));
+        montparnasseBienvenue.addAdjacent(new Adjacent (cite, 3));
+        montparnasseBienvenue.addAdjacent(new Adjacent (convention, 3));
+        montparnasseBienvenue.addAdjacent(new Adjacent (alesia, 2));
+        convention.addAdjacent(new Adjacent (mairieDIssy, 1));
+        lesHalles.addAdjacent(new Adjacent (cite, 1));
+        alesia.addAdjacent(new Adjacent (porteDOrleans, 1));
 
-       this.setStartStation(madeleine);
+       this.setStartStation(laDefense);
        this.setReseau();
 
     }
-   public void init()
+  public void init()
    {
        createStations();
        createLines();
    }
-   public void plusCourtChemin(String d,String a)
+   /**
+    * Cette fonction trouve le plus court chemin reliant deux Stations du reseau.
+    * Elle prend en paramètres deux String correspondant au nom des deux stations.
+    * @param d
+    * @param a
+    * @return String Chemin
+    */
+   public String plusCourtChemin(String d,String a)
    {
-      // String d = Saisie.lireString("DONNEZ LA STATION DE DEPART !");
-       //String a = Saisie.lireString("DONNEZ LA STATION D'ARRIVEE !");
+      StringBuffer res = new StringBuffer();
 
        Station debut = this.getStation(d);//this.getStation(s1);
        Station fin = this.getStation(a);//this.getStation(s2);
 
-       /* on teste s'il n'y a pas d'incident a la station d'arrivée ***/
-       if(valideChemin(debut, fin))
-       {
-             Station tmp = this.getChemin(debut,fin);
-             if(tmp != null)
-             {
-                Saisie.p("xxxxxxxxxxxxxxxx REPONSE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-                Saisie.p("Depart: "+debut.getNom());
-                Saisie.p("Arrivée: "+fin.getNom());
-                Saisie.p("Cout: "+this.coutDeplacement);
-                Saisie.p("\nChemin: "+tmp.chemin());
-                Saisie.p("\nLignes à emprunter: ");
-                getLignes(tmp);
-                Saisie.p("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-             }
-       }
-       else
-       {
-           Saisie.p("\nxxxxxxxxxxxxxxxxxx REPONSE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-           Saisie.p(" Les stations de debut et de fin doivent exister !         x");
-           Saisie.p("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-       }
-     // this.afficher();
+         Station tmp = this.getChemin(debut,fin);
+         if(tmp != null)
+         {
+            res.append("\nChemin: "+tmp.chemin());            
+            res.append("\nLignes à emprunter: ");
+            res.append(getLignes(tmp));
+            res.append("\n\tCout: "+this.coutDeplacement);
+         }
+     return res.toString();
    }
 
-   public void plusCourtChemin(LinkedList<String> ensemble)
+    /**
+    * Cette fonction trouve le plus court chemin reliant deux Stations du reseau
+    * en passant par d'autres stations. Elle prend en paramètres une liste de nom
+    * correspondant au stations de debut et de fin, eventuellement les stations intermédiaires.
+    * @param LinkedList ensemble correspondant au nom des stations
+    * @return Chemin ou un message d'erreur
+    */
+   public String plusCourtChemin(LinkedList<String> ensemble)
    {
-       Station tmp = null;
-       if(valide(ensemble))
+       StringBuffer res = new StringBuffer("");
+       if(valideChemin(ensemble))
        {
-       String d = ensemble.removeFirst();
+            res.append("\nxxxxxxxxxxxxxxxx REPONSE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+            res.append("\nDepart: ").append(ensemble.getFirst());
+            res.append("\nArrivée: ").append(ensemble.getLast());
+           String d = ensemble.removeFirst();
            while(ensemble.size() > 0)
            {
                String f = ensemble.getFirst();
-               this.plusCourtChemin(d, f);
+               res.append(this.plusCourtChemin(d, f));
                d = ensemble.removeFirst();
            }
+           res.append("\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
        }
        else
        {
-           Saisie.p("\nxxxxxxxxxxxxxxxxxx REPONSE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-           Saisie.p(" L'ensemble des stations de l'itinéraire doivent exister ! x");
-           Saisie.p("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+           res.append("\nxxxxxxxxxxxxxxxxxx REPONSE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+           res.append("\nLes stations n'existent pas ou sont momentanemment inaccessibles !x");
+           res.append("\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
        }
+       return res.toString();
    }
+  
    public LinkedList<Ligne> getLigne(LinkedList<Station> ls)
    {
        boolean trouve = false;
@@ -568,7 +637,12 @@ public class Reseau {
        }
        return tmp;
    }
-
+   /**
+    * Cette procedure retourne l'ensemble des stations qui constituent un chemin.
+    * @param Station end. Le paramètre correspond à la station d'arrivée, à travers les
+    * predecesseurs on trouve le chemin qui mène au debut
+    * @return LinkedList de station.
+    */
    public LinkedList<Station> getChemin(Station end)
    {
        LinkedList<Station> chemin = new LinkedList<Station>();
@@ -586,17 +660,21 @@ public class Reseau {
        }
        return chemin;
    }
-   public void getLignes(Station end)
+   /**
+    * Cette fonction nous informe sur les lignes à emprunter pour suivre un chemin.
+    * @param Station end. Le paramètre correspond à la station d'arrivée, à travers les
+    * predecesseurs on trouve le chemin et les lignes qui mène au debut.
+    * @return String correspond aux lignes à prendre et aux stations qu'elles contiennent.
+    */
+   public String getLignes(Station end)
    {
        boolean trouve;
+       String lignes = "\n";
        LinkedList<Station> chemin = new LinkedList<Station>();
        LinkedList<Chemin> route = new LinkedList<Chemin>();
 
        chemin = getChemin(end);
-       Iterator debut = chemin.iterator();
-       int index = 1;
-       int cout = 1;
-
+       //Iterator debut = chemin.iterator();
        for(int i = 0 ; i < chemin.size() ;i++)
        {
            for(int k = chemin.size() ; k > i; k--)
@@ -612,7 +690,7 @@ public class Reseau {
                        Chemin ch = new Chemin(chemin.get(i),ll,tmp.size());
                        ch.getLine().getListStations().addAll(tmp);
                        update(route,ch);
-                   }
+                   }                   
                }
            }
        }
@@ -623,7 +701,7 @@ public class Reseau {
        if(iter.hasNext())
        {
             ch = (Chemin)iter.next();
-            ch.getLine().afficherTrajet();
+            lignes += "\t"+ch.getLine().afficherTrajet();
             st = ch.getLine().getListStations().getLast();
        }
       if(!st.equals(end))
@@ -633,7 +711,7 @@ public class Reseau {
           ch = (Chemin)iter.next();
           if(ch.getStation().equals(st))
           {
-                ch.getLine().afficherTrajet();
+                lignes += "\n\t"+ch.getLine().afficherTrajet();
                 st = ch.getLine().getListStations().getLast();
            }
           if(ch.getLine().getListStations().getLast().equals(end))
@@ -641,7 +719,10 @@ public class Reseau {
 
        }
        }
+       return lignes;
    }
+
+   /*
    public void getRoute(LinkedList<Chemin> route, Station end)
    {
        boolean trouve = false;
@@ -666,7 +747,12 @@ public class Reseau {
                trouve = true;
        }
        return tmp.getLine();
-   }
+   }*/
+   /**
+    * Cette fonction met à jour le cout d'une station lié à une station
+    * @param route
+    * @param ch
+    */
    public void update(LinkedList<Chemin> route, Chemin ch)
    {
        boolean trouve = false;
@@ -684,7 +770,6 @@ public class Reseau {
        if(!trouve)
            route.add(ch);
    }
-
 
   /****METHODE POUR LE MOINS DE CHANGEMENT************/
 
