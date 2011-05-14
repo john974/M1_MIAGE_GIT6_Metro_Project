@@ -1,4 +1,5 @@
 import java.util.LinkedList;
+import 
 
 /**
  * Classe pour creer le reseau de metro
@@ -201,6 +202,7 @@ public class CreationLignes {
             case 8:
                 ligne = new Ligne(8, "Ligne 8", 40); //Creation de la ligne
 
+                ligne.getListStation
                 listStations.add(balard);
                 listStations.add(lourmel);
                 listStations.add(boucicaut);
