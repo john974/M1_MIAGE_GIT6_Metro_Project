@@ -91,7 +91,9 @@ public class Reseau {
         for(Adjacent a : this.startStation.getAdjacents())
         {
             if(!this.visitedStations.contains(a.getNode().getNumero()))
+            {
                ajouter(a.getNode());
+            }
         }
         this.getVisitedStations().clear();
     }
@@ -104,11 +106,13 @@ public class Reseau {
     public void ajouter(Station s)
     {
         visit(s);
-        this.allStations.add(s);
+        this.getAllStations().add(s);
         for(Adjacent a : s.getAdjacents())
         {
             if(!(this.visitedStations.contains(a.getNode().getNumero())))
-                ajouter(a.getNode());
+            {
+                ajouter(a.getNode());            
+            }
         }
     }
 
@@ -151,8 +155,10 @@ public class Reseau {
     public String toString() {
         StringBuffer res = new StringBuffer("**** L'ENSEMBLE DES STATIONS DU RESEAU REGROUPEES PAR LIGNE *****\n");
         for(Ligne l: this.getAllLignes())
-            l.getListStations().size();
-            //res.append(l.toString());
+        {
+           // l.getListStations().size();
+            res.append(l.toString());
+        }
         res.append("\n********************************************************************\n");
         return res.toString();
     }
@@ -233,7 +239,7 @@ public class Reseau {
         for(String s : tmp)
         {
             Station tp = this.getStation(s);
-            if(!this.getAllStations().contains(tp))
+            if(!(this.getAllStations().contains(tp)))
                 return false;
         }
         return true;
@@ -486,57 +492,49 @@ public class Reseau {
         chateauDeVincennes.addAdjacent(new Adjacent (nation, 1));
         nation.addAdjacent(new Adjacent (reuillyDiderot, 4));
         reuillyDiderot.addAdjacent(new Adjacent (gareDeLyon, 4));
+        reuillyDiderot.addAdjacent(new Adjacent (bastille, 2));
+        reuillyDiderot.addAdjacent(new Adjacent (liberte, 2));
         gareDeLyon.addAdjacent(new Adjacent (bastille, 5));
+        gareDeLyon.addAdjacent(new Adjacent (chatelet, 6));
+        gareDeLyon.addAdjacent(new Adjacent (bercy, 4));
         bastille.addAdjacent(new Adjacent (chatelet, 2));
+        bastille.addAdjacent(new Adjacent (republique, 3));
         chatelet.addAdjacent(new Adjacent (tuileries, 4));
+        chatelet.addAdjacent(new Adjacent (pyramides, 7));
         tuileries.addAdjacent(new Adjacent (concorde, 2));
         concorde.addAdjacent(new Adjacent (argentine, 1));
+        concorde.addAdjacent(new Adjacent (invalides, 2));
+        concorde.addAdjacent(new Adjacent (madeleine, 2));
+        concorde.addAdjacent(new Adjacent (rennes, 3));
         argentine.addAdjacent(new Adjacent (laDefense, 3));
-
-            //Sur la ligne 4
-        porteDeClignancourt.addAdjacent(new Adjacent (marcadetPoissonniers, 1));
-        marcadetPoissonniers.addAdjacent(new Adjacent (gareDuNord, 1));
-	gareDuNord.addAdjacent(new Adjacent (strasbourgSaintDenis, 2));
-        strasbourgSaintDenis.addAdjacent(new Adjacent (lesHalles, 5));
-        lesHalles.addAdjacent(new Adjacent (cite, 1));
-        cite.addAdjacent(new Adjacent (montparnasseBienvenue, 3));
-        montparnasseBienvenue.addAdjacent(new Adjacent (alesia, 2));
-        alesia.addAdjacent(new Adjacent (porteDOrleans, 1));
 
             //Sur la ligne 8
         balard.addAdjacent(new Adjacent (commerce, 3));
         commerce.addAdjacent(new Adjacent (invalides, 2));
-        invalides.addAdjacent(new Adjacent (concorde, 2));
-        concorde.addAdjacent(new Adjacent (madeleine, 2));
+            //Sur la ligne 4
         madeleine.addAdjacent(new Adjacent (opera, 6));
-        opera.addAdjacent(new Adjacent (strasbourgSaintDenis, 3));
-        strasbourgSaintDenis.addAdjacent(new Adjacent (republique, 5));
-        republique.addAdjacent(new Adjacent (bastille, 3));
-        bastille.addAdjacent(new Adjacent (reuillyDiderot, 2));
-        reuillyDiderot.addAdjacent(new Adjacent (liberte, 2));
-        liberte.addAdjacent(new Adjacent (creteilPointeDuLac, 2));
-
-		//Sur la ligne 12
-        porteDeLaChapelle.addAdjacent(new Adjacent (marcadetPoissonniers, 2));
-        marcadetPoissonniers.addAdjacent(new Adjacent (pigalle, 2));
-        pigalle.addAdjacent(new Adjacent (saintLazare, 3));
-        saintLazare.addAdjacent(new Adjacent (madeleine, 10));
-        madeleine.addAdjacent(new Adjacent (concorde, 2));
-        concorde.addAdjacent(new Adjacent (rennes, 3));
-        rennes.addAdjacent(new Adjacent (montparnasseBienvenue, 3));
-        montparnasseBienvenue.addAdjacent(new Adjacent (convention, 3));
-	convention.addAdjacent(new Adjacent (mairieDIssy, 1));
-
-		//Sur la ligne 14
-        
-        saintLazare.addAdjacent(new Adjacent(madeleine, 6));
         madeleine.addAdjacent(new Adjacent (pyramides, 3));
-        pyramides.addAdjacent(new Adjacent (chatelet, 7));
-        chatelet.addAdjacent(new Adjacent (gareDeLyon, 6));
-        gareDeLyon.addAdjacent(new Adjacent (bercy, 4));
+        madeleine.addAdjacent(new Adjacent (saintLazare, 10));
+        opera.addAdjacent(new Adjacent (strasbourgSaintDenis, 3));
+        strasbourgSaintDenis.addAdjacent(new Adjacent (lesHalles, 5));
+        strasbourgSaintDenis.addAdjacent(new Adjacent (republique, 5));
+        strasbourgSaintDenis.addAdjacent(new Adjacent (gareDuNord, 2));
+        liberte.addAdjacent(new Adjacent (creteilPointeDuLac, 2));
+        saintLazare.addAdjacent(new Adjacent (pigalle, 3));
         bercy.addAdjacent(new Adjacent (olympiades, 3));
+        porteDeLaChapelle.addAdjacent(new Adjacent (marcadetPoissonniers, 2));
+        porteDeClignancourt.addAdjacent(new Adjacent (marcadetPoissonniers, 1));
+        marcadetPoissonniers.addAdjacent(new Adjacent (pigalle, 2));
+        marcadetPoissonniers.addAdjacent(new Adjacent (gareDuNord, 1));
+	rennes.addAdjacent(new Adjacent (montparnasseBienvenue, 3));
+        montparnasseBienvenue.addAdjacent(new Adjacent (cite, 3));
+        montparnasseBienvenue.addAdjacent(new Adjacent (convention, 3));
+        montparnasseBienvenue.addAdjacent(new Adjacent (alesia, 2));
+        convention.addAdjacent(new Adjacent (mairieDIssy, 1));
+        lesHalles.addAdjacent(new Adjacent (cite, 1));
+        alesia.addAdjacent(new Adjacent (porteDOrleans, 1));
 
-       this.setStartStation(madeleine);
+       this.setStartStation(laDefense);
        this.setReseau();
 
     }
@@ -562,7 +560,7 @@ public class Reseau {
          Station tmp = this.getChemin(debut,fin);
          if(tmp != null)
          {
-            res.append("\nChemin: "+tmp.chemin());
+            res.append("\nChemin: "+tmp.chemin());            
             res.append("\nLignes à emprunter: ");
             res.append(getLignes(tmp));
             res.append("\n\tCout: "+this.coutDeplacement);
@@ -602,6 +600,7 @@ public class Reseau {
        }
        return res.toString();
    }
+  
    public LinkedList<Ligne> getLigne(LinkedList<Station> ls)
    {
        boolean trouve = false;
@@ -691,7 +690,7 @@ public class Reseau {
                        Chemin ch = new Chemin(chemin.get(i),ll,tmp.size());
                        ch.getLine().getListStations().addAll(tmp);
                        update(route,ch);
-                   }
+                   }                   
                }
            }
        }

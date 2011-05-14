@@ -31,14 +31,15 @@ public final class Station implements Comparable<Station>{
     }
 
     public Station( String nom,int numero, boolean incident) {
-        this.numero = numero;
+        this.numero = nodeCount++;
+        this.tempArret = numero;
         this.nom = nom;
         this.incident = incident;
     }
 
     
     public Station(String nom, double tempArret) {
-        this.numero = nodeCount++;
+       
         this.nom = nom;
         this.tempArret = tempArret;
     }
