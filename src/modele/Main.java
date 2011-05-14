@@ -12,10 +12,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Reseau r = new Reseau();
-       
-       r.init();
-       //Saisie.p(r.getStation("PointeDuLac").toString());
+        /**
+         * Création et initialisation du reseau 
+         */
+        Reseau r = new Reseau(); 
+        r.init();
+
         LinkedList<String> ensemble = new LinkedList<String>();
         Saisie.p("************************************************************");
         Saisie.p("Bienvenue sur le reseau de transport de Paris              *");
@@ -23,15 +25,13 @@ public class Main {
         Saisie.p("************************************************************\n");
         
         StringBuffer menu = new StringBuffer();
-
-        //Scanner scanner = new Scanner (System.in);
         int selection = 0;
 
         menu.append("\n**** Faites une selection: *********************************\n");
         menu.append("[1]:RECHERCHE DE L'ITINERAIRE LE PLUS RAPIDE               *\n");
         menu.append("[2]:ITINERAIRE AVEC LE MOINS DE CHANGEMENTS DE LIGNES      *\n");
         menu.append("[3]:ITINERAIRE EN PASSANT PAR CERTAINES STATIONS           *\n");
-        menu.append("[4]:AFFIVCHER LE RESEAU                                    *\n");
+        menu.append("[4]:AFFICHER LE RESEAU                                     *\n");
         menu.append("[5]:ADMINISTRATION                                         *\n");
         menu.append("[6]:EXIT                                                   *\n");
         menu.append("************************************************************\n");
@@ -51,24 +51,13 @@ public class Main {
                 break;
 
                 case 2:
-                 System.out.println("***** ITINERAIRE AVEC LE MOINS DE CHANGEMENTS DE LIGNES *****");
-                 /*str = scanner.nextLine();
-                 System.out.println("Veuillez choisir votre station de départ" );
-                 str = scanner.nextLine();
-                 System.out.println("Veuillez choisir votre statioin d'arrivée");
-                 str = scanner.nextLine();
-                 System.out.println("Votre itinéraire");*/
-                
+                 System.out.println("***** ITINERAIRE AVEC LE MOINS DE CHANGEMENTS DE LIGNES *****");                
                  String depart = Saisie.lireString("DONNEZ LA STATION DE DEPART !");
                  String arrivee = Saisie.lireString("DONNEZ LA STATION D'ARRIVEE !");
                  Station dep = r.getStation(depart);
                   Station arr = r.getStation(arrivee);
                  r.MoinsDeChangement(dep,arr);
-
-
                  break;
-
-
 
                  case 3:
                  System.out.println("***** ITINERAIRE EN PASSANT PAR CERTAINES STATIONS *****");
@@ -82,9 +71,11 @@ public class Main {
                  ensemble.add(a);
                  Saisie.p(r.plusCourtChemin(ensemble));
                 break;
+
                 case 4:
                     Saisie.p(r.toString());
                 break;
+
                 case 5:
                     Saisie.p("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                     Saisie.p("Ce module était prévu pour administrer le reseau, c'est a \n"
@@ -92,6 +83,7 @@ public class Main {
                             + "Cependant elle n'a pu être impléménté par manque de temps !");
                     Saisie.p("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                 break;
+                
                 case 6:
                     Saisie.p("==> Merci et à Bientot <==");
                 break;
