@@ -760,7 +760,7 @@ public class Reseau {
                                  Tr.add(T);
                                 afficherTrajet(T);
 
-
+                                
                          }
                         else     System.out.println("Desole Cher client(e)! Pour y aler de il faut plus d'un changement ");
                     }
@@ -781,7 +781,7 @@ public class Reseau {
         System.out.println("TRAJET "+" Prenez la "+T.getLigne1().getNom()+" , " +
                         "descendre a la Station "+ T.getS().getNom()+
                        " puis prendre le "+T.getLigne2().getNom() );//+
-    } else
+    }   else if (T.getLigne1().getNom()!=null)
          System.out.println("TRAJET DIRECT "+" Prenez la "+T.getLigne1().getNom()+"\n");
 
 }
@@ -801,7 +801,7 @@ public class Reseau {
     l1.retainAll(l2);
     liste=l1;
     //C.getListStations().retainAll(B.getListStations());
-    if(liste!=null)
+    if(liste.size() >0)
     {
          System.out.println("Point commun");
        return liste;
